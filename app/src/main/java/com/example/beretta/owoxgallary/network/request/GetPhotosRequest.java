@@ -1,5 +1,6 @@
 package com.example.beretta.owoxgallary.network.request;
 
+import com.example.beretta.owoxgallary.models.network.response.DownloadLinkResult;
 import com.example.beretta.owoxgallary.models.network.response.PhotoRest;
 import com.example.beretta.owoxgallary.models.network.response.SearchResponse;
 import com.example.beretta.owoxgallary.utils.Constant;
@@ -24,4 +25,7 @@ public interface GetPhotosRequest {
 
     @GET("search/photos")
     Call<SearchResponse> searchPhotos(@Query("client_id") String clientId, @Query("query") String query);
+
+    @GET("photos/{id}/download")
+    Call<DownloadLinkResult> getPhotosLink(@Path("id") String photoId, @Query("client_id") String clientId);
 }

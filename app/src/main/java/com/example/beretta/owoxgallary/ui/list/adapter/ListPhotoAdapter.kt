@@ -1,5 +1,6 @@
 package com.example.beretta.owoxgallary.ui.list.adapter
 
+import android.content.Context
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.AppCompatTextView
@@ -8,15 +9,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.beretta.owoxgallary.R
 import com.example.beretta.owoxgallary.models.network.response.PhotoRest
 
 /**
  * Created by beretta on 12.10.2017.
  */
-class ListPhotoAdapter : RecyclerView.Adapter<ViewHolder>() {
+class ListPhotoAdapter(
+        ctx: Context,
+        val onClickListener: OnItemClickListener) : RecyclerView.Adapter<ViewHolder>() {
+
+    interface OnItemClickListener {
+        fun photoClicked(photo: PhotoRest)
+    }
 
     var dataset: List<PhotoRest>
+    val displaymetrics = ctx.resources.displayMetrics
+    val imageTransition = DrawableTransitionOptions.withCrossFade()
 
     init {
         dataset = mutableListOf()
@@ -31,11 +41,22 @@ class ListPhotoAdapter : RecyclerView.Adapter<ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         val nextItem = dataset[position]
+
+        //image.width .... image.height
+        //device.width ... device
+        val ratio = nextItem.width.toFloat() / nextItem.height.toFloat()
+        val finalHeight = (displaymetrics.widthPixels / ratio).toInt()
+        holder.image.minimumHeight = finalHeight
+
         holder.author.text = "${nextItem.user.last_name} ${nextItem.user.first_name}"
         Glide.with(holder.itemView.context)
                 .load(nextItem.urls.regular)
+                .transition(imageTransition)
                 .into(holder.image)
+
+        holder.itemView.setOnClickListener { onClickListener.photoClicked(nextItem) }
     }
 
     override fun getItemCount(): Int = dataset.size

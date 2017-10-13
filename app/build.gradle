@@ -34,15 +34,17 @@ dependencies {
     implementation 'com.android.support:design:26.1.0'
 
     //Kotlin
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     //Network
-    compile  "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    compile "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
     compile 'com.google.code.gson:gson:2.8.0'
 
-    compile 'com.github.bumptech.glide:glide:4.0.0'
+    compile 'com.github.bumptech.glide:glide:4.2.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
 
     //Lifecycle
     compile "android.arch.lifecycle:extensions:$archLifecycleVersion"

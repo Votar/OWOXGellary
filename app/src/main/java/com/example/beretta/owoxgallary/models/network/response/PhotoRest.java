@@ -9,7 +9,7 @@ public class PhotoRest {
 
     private UrlsRest urls;
 
-    private String width;
+    private Integer width;
 
     private LiknsRest links;
 
@@ -17,7 +17,7 @@ public class PhotoRest {
 
     private String updated_at;
 
-    private String height;
+    private Integer height;
 
     private String color;
 
@@ -51,12 +51,12 @@ public class PhotoRest {
         this.urls = urls;
     }
 
-    public String getWidth ()
+    public Integer getWidth ()
     {
         return width;
     }
 
-    public void setWidth (String width)
+    public void setWidth (Integer width)
     {
         this.width = width;
     }
@@ -91,12 +91,12 @@ public class PhotoRest {
         this.updated_at = updated_at;
     }
 
-    public String getHeight ()
+    public Integer getHeight ()
     {
         return height;
     }
 
-    public void setHeight (String height)
+    public void setHeight (Integer height)
     {
         this.height = height;
     }

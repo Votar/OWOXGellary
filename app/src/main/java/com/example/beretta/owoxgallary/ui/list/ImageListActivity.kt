@@ -11,14 +11,20 @@ import android.view.View
 import com.example.beretta.owoxgallary.R
 import com.example.beretta.owoxgallary.arch.view.BaseArchActivity
 import com.example.beretta.owoxgallary.models.network.response.PhotoRest
+import com.example.beretta.owoxgallary.ui.details.DetailsActivity
 import com.example.beretta.owoxgallary.ui.list.adapter.ListPhotoAdapter
 import com.example.beretta.owoxgallary.ui.list.contract.ImageListContract
 import kotlinx.android.synthetic.main.activity_main.*
 
 class ImageListActivity : BaseArchActivity<ImageListContract.View, ImageListContract.ViewModel>(), ImageListContract.View {
 
-    val adapter = ListPhotoAdapter()
-    var searchView : SearchView? = null
+    private val onPhotoClickListener = object : ListPhotoAdapter.OnItemClickListener {
+        override fun photoClicked(photo: PhotoRest) {
+            showDetails(photo)
+        }
+    }
+    val adapter by lazy { ListPhotoAdapter(this, onPhotoClickListener) }
+    var searchView: SearchView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)
@@ -70,7 +76,7 @@ class ImageListActivity : BaseArchActivity<ImageListContract.View, ImageListCont
     override fun getViewModel(): ImageListContract.ViewModel = ViewModelProviders.of(this).get(ImageListViewModel::class.java)
 
     private val refreshListener = SwipeRefreshLayout.OnRefreshListener {
-                getViewModel().refreshList(searchView?.query?.toString())
+        getViewModel().refreshList(searchView?.query?.toString())
     }
 
     private val searchCallbackListener = object : SearchView.OnQueryTextListener {
@@ -86,6 +92,12 @@ class ImageListActivity : BaseArchActivity<ImageListContract.View, ImageListCont
             return false
         }
 
+    }
+
+
+    private fun showDetails(photo: PhotoRest) {
+        val intent = DetailsActivity.getIntent(this, photo)
+        startActivity(intent)
     }
 
 
