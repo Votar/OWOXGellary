@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 ext {
     retrofitVersion = '2.1.0'
 
@@ -31,16 +33,23 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:design:26.1.0'
 
+    //Kotlin
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
     //Network
     compile  "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
     compile 'com.google.code.gson:gson:2.8.0'
+
+    compile 'com.github.bumptech.glide:glide:4.0.0'
 
     //Lifecycle
     compile "android.arch.lifecycle:extensions:$archLifecycleVersion"
     compile "android.arch.lifecycle:runtime:$archLifecycleVersion"
 
     //OkHttp
+    compile "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
     compile "com.squareup.okhttp3:okhttp:$okHttpVersion"
     compile "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
     testImplementation 'junit:junit:4.12'

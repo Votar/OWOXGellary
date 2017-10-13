@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     >
 
-    <LinearLayout
+     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@color/image_without_palette">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/item_image_img"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            android:maxHeight="@dimen/image_max_height"
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:transitionName="imageCover"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             android:background="@color/image_without_palette"/>
 
         <FrameLayout
@@ -38,7 +39,7 @@
                 android:orientation="vertical"
                 >
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/item_image_author"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -47,18 +48,6 @@
                     android:lines="1"
                     android:ellipsize="end"
                     android:textSize="16sp"
-                    android:text="test"
-                    />
-
-                <TextView
-                    android:id="@+id/item_image_date"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:textColor="@color/text_without_palette"
-                    android:lines="1"
-                    android:ellipsize="end"
-                    android:textSize="15sp"
                     android:text="test"
                     />
 
