@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.NavUtils
 import android.support.v4.content.ContextCompat
 import android.view.Menu
 import android.view.MenuItem
@@ -85,7 +86,7 @@ class DetailsActivity : BaseArchActivity<DetailsContract.View, DetailsContract.V
             }
             R.id.action_download -> prepareDownloadFile()
 
-            android.R.id.home -> onBackPressed()
+            android.R.id.home -> NavUtils.navigateUpFromSameTask(this)
         }
 
         return true

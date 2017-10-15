@@ -16,4 +16,6 @@
     <string name="text_download_finished_with_fail">Downloading %s have finished with failure</string>
     <string name="required_permissions">You should garant permissions to write external storage</string>
     <string name="er_to_get_download_link">Couldn\'t get download link</string>
+    <string name="notification_success_loading_title">Loading is compete</string>
+    <string name="notification_success_loading_text">Open file %s</string>
 </resources>

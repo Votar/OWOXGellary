@@ -1,10 +1,12 @@
 package com.example.beretta.owoxgallary.network.service
 
 import android.app.IntentService
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
+import android.net.Uri
 import android.os.Environment
+import android.support.v4.app.NotificationCompat
 import android.support.v4.content.LocalBroadcastManager
 import com.example.beretta.owoxgallary.R
 import java.io.BufferedInputStream
@@ -12,6 +14,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
+import android.app.NotificationManager
 
 
 class DownloadService : IntentService("DownloadService") {
@@ -67,12 +70,12 @@ class DownloadService : IntentService("DownloadService") {
             output.flush()
             output.close()
             input.close()
+            sendResultWithNotification(true, fileName, dir.absolutePath)
+
         } catch (e: IOException) {
             e.printStackTrace()
             sendResult(false, fileName)
-            return
         }
-        sendResult(true, fileName)
     }
 
     private fun sendDownloadBegan(fileName: String) {
@@ -88,6 +91,24 @@ class DownloadService : IntentService("DownloadService") {
         intent.putExtra(KEY_FLAG, success)
         intent.putExtra(KEY_FILE_NAME, fileName)
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+    }
+
+    private fun sendResultWithNotification(success: Boolean, fileName: String, dirPath: String) {
+        sendResult(success, fileName)
+        if (success) {
+            val intent = Intent(Intent.ACTION_VIEW)
+            val uri = Uri.parse(dirPath)
+            intent.setDataAndType(uri, "resource/folder")
+            val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, 0)
+            val notification = NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.ic_download)
+                    .setContentTitle(getString(R.string.notification_success_loading_title))
+                    .setContentText(getString(R.string.notification_success_loading_text, fileName))
+                    .setContentIntent(pendingIntent)
+                    .build()
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.notify(fileName.hashCode(), notification)
+        }
     }
 
 
