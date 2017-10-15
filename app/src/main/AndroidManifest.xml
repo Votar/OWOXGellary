@@ -27,7 +27,11 @@
             android:label="@string/title_activity_details"
             android:launchMode="singleTask"
             android:parentActivityName=".ui.list.ImageListActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.list.ImageListActivity"/>
+        </activity>
 
         <service android:name=".network.service.DownloadService" />
     </application>
