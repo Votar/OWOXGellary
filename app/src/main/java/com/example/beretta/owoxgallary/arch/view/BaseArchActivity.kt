@@ -1,8 +1,7 @@
 package com.example.beretta.owoxgallary.arch.view
 
-import android.content.Context
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.example.beretta.owoxgallary.arch.viewmodel.ArchViewModelContract
 
 /**
@@ -19,9 +18,6 @@ abstract class BaseArchActivity<in V : ArchViewContract, out T : ArchViewModelCo
         super.onCreate(savedInstanceState)
         getViewModel().attachView(this as V)
     }
-
-
-    override fun getActivityContext(): Context = applicationContext
 
     override fun showError(error: String?) {
         getRootView().showMessage(error)

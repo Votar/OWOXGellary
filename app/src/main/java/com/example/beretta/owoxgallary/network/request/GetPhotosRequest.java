@@ -3,14 +3,11 @@ package com.example.beretta.owoxgallary.network.request;
 import com.example.beretta.owoxgallary.models.network.response.DownloadLinkResult;
 import com.example.beretta.owoxgallary.models.network.response.PhotoRest;
 import com.example.beretta.owoxgallary.models.network.response.SearchResponse;
-import com.example.beretta.owoxgallary.utils.Constant;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -20,11 +17,11 @@ import retrofit2.http.Query;
 
 public interface GetPhotosRequest {
     @GET("photos")
-    Call<List<PhotoRest>> listPhotos(@Query("client_id") String clientId);
+    Call<List<PhotoRest>> listPhotos(@Query("client_id") String clientId, @Query("page") int page);
 
 
     @GET("search/photos")
-    Call<SearchResponse> searchPhotos(@Query("client_id") String clientId, @Query("query") String query);
+    Call<SearchResponse> searchPhotos(@Query("client_id") String clientId, @Query("query") String query, @Query("page") int page);
 
     @GET("photos/{id}/download")
     Call<DownloadLinkResult> getPhotosLink(@Path("id") String photoId, @Query("client_id") String clientId);

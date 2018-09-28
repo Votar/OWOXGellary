@@ -1,15 +1,15 @@
 package com.example.beretta.owoxgallary.ui.details
 
 import android.Manifest
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.NavUtils
-import android.support.v4.content.ContextCompat
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NavUtils
+import androidx.core.content.ContextCompat
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -18,11 +18,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.beretta.owoxgallary.R
 import com.example.beretta.owoxgallary.arch.view.BaseArchActivity
-import com.example.beretta.owoxgallary.models.network.response.DownloadLinkResult
 import com.example.beretta.owoxgallary.models.network.response.PhotoRest
 import com.example.beretta.owoxgallary.network.service.DownloadService
 import com.example.beretta.owoxgallary.utils.GsonHolder
-
 import kotlinx.android.synthetic.main.activity_details.*
 
 class DetailsActivity : BaseArchActivity<DetailsContract.View, DetailsContract.ViewModel>(),
@@ -49,8 +47,7 @@ class DetailsActivity : BaseArchActivity<DetailsContract.View, DetailsContract.V
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        actionBar.setDisplayHomeAsUpEnabled(true)
         deserializeIntent()
         setupLayouts()
     }
@@ -104,7 +101,6 @@ class DetailsActivity : BaseArchActivity<DetailsContract.View, DetailsContract.V
                                             permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
             PERNISSION_RQT_CODE -> {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getViewModel().requestLink(selectedPhoto.id)
                 } else {

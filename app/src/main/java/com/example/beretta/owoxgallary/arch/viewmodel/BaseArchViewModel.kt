@@ -1,18 +1,18 @@
 package com.example.beretta.owoxgallary.arch.viewmodel
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import com.example.beretta.owoxgallary.arch.view.ArchViewContract
 
 
 open class BaseArchViewModel<V : ArchViewContract> : ArchViewModelContract<V>, ViewModel(){
 
-    protected var mView: V? = null
+    protected var view: V? = null
 
     override fun attachView(view: V) {
-        mView = view
+        this.view = view
     }
 
     override fun detachView() {
-        mView = null
+        view = null
     }
 }

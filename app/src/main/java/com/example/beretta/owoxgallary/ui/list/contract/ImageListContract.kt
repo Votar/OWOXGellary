@@ -12,12 +12,13 @@ interface ImageListContract {
         fun showProgress()
         fun hideProgress()
         fun showEmptyView()
-        fun showList()
+        fun hideEmptyView()
         fun bindResult(result: List<PhotoRest>)
     }
 
     interface ViewModel : ArchViewModelContract<View> {
         fun refreshList(query : String?)
+        fun onRetryClick()
     }
 
 }

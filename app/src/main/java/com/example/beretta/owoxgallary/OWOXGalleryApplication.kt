@@ -5,7 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.support.v4.content.LocalBroadcastManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.widget.Toast
 
 import com.bumptech.glide.Glide
@@ -17,7 +17,6 @@ class OWOXGalleryApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         //Create singleton
-        ApiUnsplash.getInstance()
         Glide.get(this).setMemoryCategory(MemoryCategory.HIGH)
         registerDownloadActionListener()
     }

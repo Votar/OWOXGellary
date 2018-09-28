@@ -15,22 +15,22 @@ import retrofit2.Response
 class DetailsViewModel : BaseArchViewModel<DetailsContract.View>(), DetailsContract.ViewModel {
 
     override fun requestLink(id: String) {
-        ApiUnsplash.getInstance().service.getPhotosLink(id, Constant.userId).enqueue(responseCallback)
+        ApiUnsplash.service.getPhotosLink(id, Constant.userId).enqueue(responseCallback)
     }
 
     private val responseCallback = object : Callback<DownloadLinkResult> {
         override fun onResponse(call: Call<DownloadLinkResult>?, response: Response<DownloadLinkResult>) {
             if (response.isSuccessful) {
                 when (response.code()) {
-                    200 -> mView?.startDownloading(response.body().url)
-                    else -> mView?.showError(R.string.er_default_inner_error)
+                    200 -> view?.startDownloading(response.body().url)
+                    else -> view?.showError(R.string.er_default_inner_error)
                 }
-            } else mView?.showError(R.string.er_to_get_download_link)
+            } else view?.showError(R.string.er_to_get_download_link)
 
         }
 
         override fun onFailure(call: Call<DownloadLinkResult>?, t: Throwable?) {
-            mView?.showError(R.string.er_to_get_download_link)
+            view?.showError(R.string.er_to_get_download_link)
         }
     }
 }

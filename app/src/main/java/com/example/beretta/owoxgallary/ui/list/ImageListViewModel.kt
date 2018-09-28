@@ -1,11 +1,11 @@
 package com.example.beretta.owoxgallary.ui.list
 
 import com.example.beretta.owoxgallary.R
-import com.example.beretta.owoxgallary.ui.list.contract.ImageListContract
 import com.example.beretta.owoxgallary.arch.viewmodel.BaseArchViewModel
 import com.example.beretta.owoxgallary.models.network.response.PhotoRest
 import com.example.beretta.owoxgallary.models.network.response.SearchResponse
 import com.example.beretta.owoxgallary.network.ApiUnsplash
+import com.example.beretta.owoxgallary.ui.list.contract.ImageListContract
 import com.example.beretta.owoxgallary.utils.Constant
 import retrofit2.Call
 import retrofit2.Callback
@@ -14,90 +14,84 @@ import retrofit2.Response
 class ImageListViewModel : BaseArchViewModel<ImageListContract.View>(),
         ImageListContract.ViewModel {
 
-    val api = ApiUnsplash.getInstance().service!!
-    var lastPhotoResult: List<PhotoRest>? = null
+    val api = ApiUnsplash.service
+    var lastPage: Int = 0
+    var lastQuery: String = ""
+    private val lastPhotoResult: MutableList<PhotoRest> = mutableListOf()
 
     override fun attachView(view: ImageListContract.View) {
         super.attachView(view)
-        if (lastPhotoResult == null)
-            refreshList("")
-        else
-            showResult(lastPhotoResult!!)
-
+        showResult(lastPhotoResult, lastPage)
     }
 
     override fun refreshList(query: String?) {
-        mView?.showProgress()
-        if (query.isNullOrEmpty())
-            api.listPhotos(Constant.userId).enqueue(photosListCallback)
+        view?.showProgress()
+        if (query != null && query.isNotEmpty())
+            searchPhotos(query)
         else
-            api.searchPhotos(Constant.userId, query).enqueue(searchListCallback)
+            loadPhotos()
+
     }
 
-    private fun showResult(list: List<PhotoRest>) {
+
+    private fun loadPhotos() {
+        lastPage += 1
+        api.listPhotos(Constant.userId, lastPage).enqueue(object : Callback<List<PhotoRest>> {
+
+            override fun onResponse(call: Call<List<PhotoRest>>?, response: Response<List<PhotoRest>>) {
+                view?.hideProgress()
+                when (response.code()) {
+                    200 -> showResult(response.body(), lastPage)
+                    403 -> view?.showError(R.string.er_rate_limit)
+                    else -> view?.showError(R.string.er_default_inner_error)
+                }
+            }
+
+            override fun onFailure(call: Call<List<PhotoRest>>?, t: Throwable?) {
+                view?.showError(R.string.er_default_inner_error)
+                view?.hideProgress()
+            }
+        })
+    }
+
+    private fun searchPhotos(query: String) {
+        if (lastQuery != query) {
+            lastQuery = query
+            lastPage = 1
+            lastPhotoResult.clear()
+        } else {
+            this.lastPage += 1
+        }
+        api.searchPhotos(Constant.userId, query, lastPage).enqueue(object : Callback<SearchResponse> {
+            override fun onResponse(call: Call<SearchResponse>?, response: Response<SearchResponse>) {
+                view?.hideProgress()
+                when (response.code()) {
+                    200 -> showResult(response.body().results, lastPage)
+                    403 -> view?.showError(R.string.er_rate_limit)
+                    else -> view?.showError(R.string.er_default_inner_error)
+                }
+            }
+
+            override fun onFailure(call: Call<SearchResponse>?, t: Throwable?) {
+                view?.showError(R.string.er_default_inner_error)
+                view?.hideProgress()
+            }
+        })
+    }
+
+    override fun onRetryClick() {
+        refreshList(lastQuery)
+    }
+
+    private fun showResult(list: List<PhotoRest>, page: Int) {
         if (list.isEmpty())
-            mView?.showEmptyView()
+            view?.showEmptyView()
         else {
-            mView?.showList()
-            mView?.bindResult(list)
-        }
-    }
-
-
-    val searchListCallback = object : Callback<SearchResponse> {
-        override fun onResponse(call: Call<SearchResponse>?, response: Response<SearchResponse>) {
-            mView?.hideProgress()
-            if (response.isSuccessful) {
-                when (response.code()) {
-                    200 -> response.body().apply {
-                        lastPhotoResult = this.results
-                        if (this.results.isEmpty())
-                            mView?.showEmptyView()
-                        else
-                            showResult(this.results)
-                    }
-                    403 -> mView?.showError(R.string.er_rate_limit)
-
-                    else -> {
-
-                    }
-                }
-            } else
-                mView?.showError(R.string.er_default_inner_error)
-        }
-
-        override fun onFailure(call: Call<SearchResponse>?, t: Throwable?) {
-            mView?.showError(R.string.er_default_inner_error)
-            mView?.hideProgress()
-        }
-    }
-
-
-    val photosListCallback = object : Callback<List<PhotoRest>> {
-        override fun onFailure(call: Call<List<PhotoRest>>?, t: Throwable?) {
-            mView?.showError(R.string.er_default_inner_error)
-            mView?.hideProgress()
-        }
-
-        override fun onResponse(call: Call<List<PhotoRest>>?, response: Response<List<PhotoRest>>) {
-            mView?.hideProgress()
-            if (response.isSuccessful) {
-                when (response.code()) {
-                    200 -> response.body().apply {
-                        lastPhotoResult = this
-                        if (this.isEmpty())
-                            mView?.showEmptyView()
-                        else
-                            showResult(this)
-                    }
-                    403 -> mView?.showError(R.string.er_rate_limit)
-
-                    else -> {
-
-                    }
-                }
-            } else
-                mView?.showError(R.string.er_default_inner_error)
+            if (page == 1)
+                lastPhotoResult.clear()
+            lastPhotoResult.addAll(list)
+            view?.hideEmptyView()
+            view?.bindResult(lastPhotoResult)
         }
     }
 }

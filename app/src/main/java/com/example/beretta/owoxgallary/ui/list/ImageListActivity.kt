@@ -1,13 +1,12 @@
 package com.example.beretta.owoxgallary.ui.list
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SearchView
-import android.util.Log
 import android.view.Menu
 import android.view.View
+import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.beretta.owoxgallary.R
 import com.example.beretta.owoxgallary.arch.view.BaseArchActivity
 import com.example.beretta.owoxgallary.models.network.response.PhotoRest
@@ -23,13 +22,12 @@ class ImageListActivity : BaseArchActivity<ImageListContract.View, ImageListCont
             showDetails(photo)
         }
     }
-    val adapter by lazy { ListPhotoAdapter(this, onPhotoClickListener) }
-    var searchView: SearchView? = null
+    private val adapter get() = activity_list_photo_images_list_recycler.adapter as ListPhotoAdapter
+    lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_main)
         super.onCreate(savedInstanceState)
-        setSupportActionBar(activity_list_photo_toolbar)
         setupLayout()
     }
 
@@ -37,15 +35,15 @@ class ImageListActivity : BaseArchActivity<ImageListContract.View, ImageListCont
         menuInflater.inflate(R.menu.menu_main, menu)
         val searchItem = menu.findItem(R.id.action_search)
         searchView = searchItem.actionView as SearchView
-        searchView?.setOnQueryTextListener(searchCallbackListener)
+        searchView.setOnQueryTextListener(searchCallbackListener)
         return true
     }
 
     private fun setupLayout() {
         activity_list_photo_swipe_refresh.setOnRefreshListener(refreshListener)
-        activity_list_photo_try_again_bth.setOnClickListener { getViewModel().refreshList("") }
-        activity_list_photo_images_list_recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        activity_list_photo_images_list_recycler.adapter = adapter
+        activity_list_photo_try_again_bth.setOnClickListener { getViewModel().onRetryClick() }
+        activity_list_photo_images_list_recycler.layoutManager = LinearLayoutManager(this)
+        activity_list_photo_images_list_recycler.adapter = ListPhotoAdapter(onPhotoClickListener)
     }
 
     override fun showProgress() {
@@ -54,7 +52,6 @@ class ImageListActivity : BaseArchActivity<ImageListContract.View, ImageListCont
 
     override fun hideProgress() {
         activity_list_photo_swipe_refresh.isRefreshing = false
-
     }
 
     override fun showEmptyView() {
@@ -62,7 +59,7 @@ class ImageListActivity : BaseArchActivity<ImageListContract.View, ImageListCont
         activity_list_photo_images_list_recycler.visibility = View.GONE
     }
 
-    override fun showList() {
+    override fun hideEmptyView() {
         activity_list_photo_empty_view.visibility = View.GONE
         activity_list_photo_images_list_recycler.visibility = View.VISIBLE
     }
@@ -76,14 +73,13 @@ class ImageListActivity : BaseArchActivity<ImageListContract.View, ImageListCont
     override fun getViewModel(): ImageListContract.ViewModel = ViewModelProviders.of(this).get(ImageListViewModel::class.java)
 
     private val refreshListener = SwipeRefreshLayout.OnRefreshListener {
-        getViewModel().refreshList(searchView?.query?.toString())
+        getViewModel().refreshList(searchView.query?.toString())
     }
 
     private val searchCallbackListener = object : SearchView.OnQueryTextListener {
         override fun onQueryTextSubmit(query: String?): Boolean {
-            Log.d("DEBUG", "SEARCH")
             getViewModel().refreshList(query)
-            searchView?.clearFocus()
+            searchView.clearFocus()
             return true
         }
 
